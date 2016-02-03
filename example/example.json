@@ -1,0 +1,97 @@
+{
+    "name": "Valid",
+    "state": 0,
+    "digraph": [
+      0, 1, 0, 0, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 1, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 1, 0, 0, 0, 1, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      1, 1, 1, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 1, 0
+    ],
+    "nodes": [
+      {
+        "id": 0,
+        "target": "test",
+        "name": "a",
+        "engine": "toscassh",
+        "artifact": "./sleep.sh",
+        "args": null,
+        "output": null
+      },
+      {
+        "id": 1,
+        "name": "b",
+        "target": "test",
+        "engine": "sleep",
+        "artifact": "myscript.sh",
+        "args": null,
+        "output": {
+          "output1": ""
+        }
+      },
+      {
+        "id": 2,
+        "target": "test",
+        "name": "c",
+        "engine": "toscassh",
+        "artifact": "./script2.sh",
+        "args": [
+          "ip_address=get_attribute d:ip_address"
+        ],
+        "output": {
+            "my_ip": ""
+        }
+      },
+      {
+        "id": 3,
+        "name": "d",
+        "target": "test",
+        "engine": "toscassh",
+        "artifact": "./script.sh",
+        "args": null,
+        "output": {
+            "network": "",
+            "ip_address": ""
+        }
+      },
+      {
+        "id": 4,
+        "target": "test",
+        "name": "e",
+        "engine": "sleep",
+        "artifact": "example/script.sh",
+        "args": null,
+        "output": null
+      },
+      {
+        "id": 5,
+        "target": "test",
+        "name": "f",
+        "engine": "sleep",
+        "artifact": "example/script.sh",
+        "args": null,
+        "output": null
+      },
+      {
+        "id": 6,
+        "target": "test",
+        "name": "g",
+        "engine": "sleep",
+        "artifact": "example/script.sh",
+        "args": null,
+        "output": null
+      },
+      {
+        "id": 7,
+        "target": "test",
+        "name": "h",
+        "engine": "sleep",
+        "artifact": "example/script.sh",
+        "args": null,
+        "output": null
+      }
+  ]
+}
