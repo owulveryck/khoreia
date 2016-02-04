@@ -1,0 +1,62 @@
+{
+	"name": "Valid",
+	"state": 0,
+	"digraph": [
+		[0, 1, 0, 0, 1, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 1, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 1, 0, 0, 0, 1, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[1, 1, 1, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 1, 0]
+	],
+	"nodes": [{
+		"id": 0,
+		"target": "test",
+		"name": "a",
+		"actions": [{
+			"create": {
+				"do": {
+					"engine": "toscassh",
+					"artifact": "./sleep.sh",
+					"args": null,
+					"output": null
+				},
+				"check": {
+					"engine": "toscassh",
+					"artifact": "./sleep.sh",
+					"args": null,
+					"output": null
+
+				}
+			}
+		}, {
+			"configure": {
+				"do": {
+					"engine": "toscassh",
+					"artifact": "./sleep.sh",
+					"args": null,
+					"output": null
+				},
+				"check": {
+					"engine": "toscassh",
+					"artifact": "./sleep.sh",
+					"args": null,
+					"output": null
+
+				}
+			}
+		}]
+	}, {
+		"id": 1,
+		"name": "b",
+		"target": "test",
+		"engine": "sleep",
+		"artifact": "myscript.sh",
+		"args": null,
+		"output": {
+			"output1": ""
+		}
+	}]
+}
