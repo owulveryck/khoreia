@@ -1,32 +1,42 @@
 package choreography
 
+import (
+	"log"
+)
+
 // A Node structure is the base structure of an execution node
 type Node struct {
-	ID         int        `json:"id",yaml:"id"`
-	Name       string     `json:"name",yaml:"name"`
-	Target     string     `json:"target",yaml:"target"`
-	Interfaces Interfaces `json:"interfaces",yaml:"interfaces"`
+	ID         int               `json:"id",yaml:"id"`
+	Name       string            `json:"name",yaml:"name"`
+	Target     string            `json:"target",yaml:"target"`
+	Interfaces map[string]Action `json:"interfaces",yaml:"interfaces"`
 }
 
-// Interfaces is a type used for adding a special unmarshaling func
-type Interfaces map[string]Interface
+type Action struct {
+	Do    Implementation `json:"do",yaml:"do"`
+	Check Implementation `json:"check",yaml:"check"`
+}
+type Implementation struct {
+	Engine    string `json:"engine",yaml:"engine"`
+	Interface Interface
+}
 
 // We need to specialised the Unmarshaling because of the Interfaces field
-func (n *Interfaces) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var temp map[string]interface{}
+func (n *Implementation) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	type implementation map[string]map[string]interface{}
+	var temp implementation
 	if err := unmarshal(&temp); err != nil {
 		return err
 	}
-	for interfaceName, _ := range temp {
-		switch interfaceName {
-		case "FileEngine":
-			var temp map[string]FileEngine
-			if err := unmarshal(&temp); err != nil {
-				return err
-			}
-
-		}
+	var engine string
+	var e *FileEngine
+	for key, val := range temp {
+		log.Println(val)
+		engine = key
+		e.New(val)
 	}
+	n.Engine = engine
+	n.Interface = e
 	return nil
 }
 
@@ -49,9 +59,9 @@ type Interface interface {
 
 // FileEngine
 type FileEngine struct {
-	Artifact Artifact          `json:"artifact",yaml:"artifact"`
-	Inputs   []Input           `json:"inputs",yaml:"inputs"`
-	Outputs  map[string]Output `json:"inputs",yaml:"inputs"`
+	artifact Artifact          `json:"artifact",yaml:"artifact"`
+	inputs   []Input           `json:"inputs",yaml:"inputs"`
+	outputs  map[string]Output `json:"inputs",yaml:"inputs"`
 }
 
 func (e *FileEngine) Check() chan bool {
@@ -67,8 +77,18 @@ func (e *FileEngine) Check() chan bool {
 	return c
 }
 
+func (e *FileEngine) New(i map[string]interface{}) {
+	for k, v := range i {
+		switch k {
+		case "artifact":
+			e.artifact = Artifact(v.(string))
+		}
+	}
+}
+
 func (e *FileEngine) Do() chan State {
 	c := make(chan State)
+	log.Printf("Do method of the FileEngine Artifact:%v, Inputs: %v", e.artifact, e.inputs)
 	return c
 }
 

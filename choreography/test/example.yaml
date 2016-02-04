@@ -1,20 +1,18 @@
-state: 0
-nodes:
 - id: 0
   name: a
   target: test
   interfaces:
-  - create:
+    create:
       check:
-        artifact: /tmp/nodes/0/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/0/create
       do:
-        artifact: test
-        engine: nil
-        args: 
-        - flag=/tmp/nodes/0/create
-        output: null
-  - configure:
+        file: 
+          artifact: test
+          args: 
+          - flag=/tmp/nodes/0/create
+          output: null
+    configure:
       check:
         artifact: /tmp/nodes/0/configure
         engine: file
@@ -30,7 +28,7 @@ nodes:
   name: a
   target: test
   actions:
-  - create:
+    create:
       check:
         artifact: /tmp/nodes/1/create
         engine: file
@@ -39,7 +37,7 @@ nodes:
         engine: nil
         args: null
         output: null
-  - configure:
+    configure:
       check:
         artifact: /tmp/nodes/1/configure
         engine: file
@@ -56,7 +54,7 @@ nodes:
   name: a
   target: test
   actions:
-  - create:
+    create:
       check:
         artifact: /tmp/nodes/2/create
         engine: file
@@ -65,7 +63,7 @@ nodes:
         engine: nil
         args: null
         output: null
-  - configure:
+    configure:
       check:
         artifact: /tmp/nodes/2/configure
         engine: file
@@ -82,7 +80,7 @@ nodes:
   name: a
   target: test
   actions:
-  - create:
+    create:
       check:
         artifact: /tmp/nodes/3/create
         engine: file
@@ -91,7 +89,7 @@ nodes:
         engine: nil
         args: null
         output: null
-  - configure:
+    configure:
       check:
         artifact: /tmp/nodes/3/configure
         engine: file
@@ -104,7 +102,7 @@ nodes:
   name: a
   target: test
   actions:
-  - create:
+    create:
       check:
         artifact: /tmp/nodes/4/create
         engine: file
@@ -113,7 +111,7 @@ nodes:
         engine: nil
         args: null
         output: null
-  - configure:
+    configure:
       check:
         artifact: /tmp/nodes/4/configure
         engine: file
@@ -129,7 +127,7 @@ nodes:
   name: a
   target: test
   actions:
-  - create:
+    create:
       check:
         artifact: /tmp/nodes/5/create
         engine: file
@@ -138,7 +136,7 @@ nodes:
         engine: nil
         args: null
         output: null
-  - configure:
+    configure:
       check:
         artifact: /tmp/nodes/5/configure
         engine: file
@@ -151,7 +149,7 @@ nodes:
   name: a
   target: test
   actions:
-  - create:
+    create:
       check:
         artifact: /tmp/nodes/6/create
         engine: file
@@ -160,7 +158,7 @@ nodes:
         engine: nil
         args: null
         output: null
-  - configure:
+    configure:
       check:
         artifact: /tmp/nodes/6/configure
         engine: file
@@ -178,7 +176,7 @@ nodes:
   name: a
   target: test
   actions:
-  - create:
+    create:
       check:
         artifact: /tmp/nodes/7/create
         engine: file
@@ -187,7 +185,7 @@ nodes:
         engine: nil
         args: null
         output: null
-  - configure:
+    configure:
       check:
         artifact: /tmp/nodes/7/configure
         engine: file
