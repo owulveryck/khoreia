@@ -1,0 +1,4 @@
+package choreography
+
+func init() {
+}

@@ -4,10 +4,7 @@ import (
 	"log"
 	"time"
 
-	"fmt"
 	"github.com/coreos/etcd/client"
-	"github.com/coreos/etcd/etcdmain"
-	"net/http"
 )
 
 var cfg = client.Config{
@@ -18,18 +15,6 @@ var cfg = client.Config{
 }
 
 var kapi client.KeysAPI
-
-func startEtcd() {
-	go etcdmain.Main()
-	ping := fmt.Sprintf("%v/v2/stats/leader", cfg.Endpoints[0])
-	r, err := http.Get(ping)
-	for err != nil || r.StatusCode != 200 {
-		r, err = http.Get(ping)
-		time.Sleep(100 * time.Millisecond)
-	}
-	log.Println("etcd up and running")
-
-}
 
 func initEtcdClient() {
 
