@@ -39,19 +39,14 @@ func (n *Implementation) UnmarshalYAML(unmarshal func(interface{}) error) error 
 	var e Interface
 	for key, val := range temp {
 		engine = key
-		f := func(val map[string]interface{}, f func(map[string]interface{}) FileEngine) FileEngine {
+		f := func(val map[string]interface{}, f func(map[string]interface{}) *FileEngine) *FileEngine {
 			return f(val)
 		}
-		fe := f(val, NewFileEngine)
-		e = &fe
+		e = f(val, NewFileEngine)
 	}
 	n.Engine = engine
 	n.Interface = e
 	return nil
-}
-
-func (n *Node) Run() {
-
 }
 
 type Artifact string
@@ -87,7 +82,7 @@ func (e *FileEngine) Check() chan bool {
 	return c
 }
 
-func NewFileEngine(i map[string]interface{}) FileEngine {
+func NewFileEngine(i map[string]interface{}) *FileEngine {
 	var artifact Artifact
 	for k, v := range i {
 		switch k {
@@ -95,7 +90,7 @@ func NewFileEngine(i map[string]interface{}) FileEngine {
 			artifact = Artifact(v.(string))
 		}
 	}
-	return FileEngine{artifact: artifact}
+	return &FileEngine{artifact: artifact}
 }
 
 func (e *FileEngine) Do() chan State {
