@@ -1,7 +1,7 @@
 package choreography
 
 import (
-	"log"
+	"github.com/owulveryck/khoreia/choreography/engines"
 )
 
 // A Node structure is the base structure of an execution node
@@ -39,66 +39,18 @@ func (n *Implementation) UnmarshalYAML(unmarshal func(interface{}) error) error 
 	var e Interface
 	for key, val := range temp {
 		engine = key
-		f := func(val map[string]interface{}, f func(map[string]interface{}) *FileEngine) *FileEngine {
+		f := func(val map[string]interface{}, f func(map[string]interface{}) *engines.FileEngine) *engines.FileEngine {
 			return f(val)
 		}
-		e = f(val, NewFileEngine)
+		e = f(val, engines.NewFileEngine)
 	}
 	n.Engine = engine
 	n.Interface = e
 	return nil
 }
 
-type Artifact string
-type Engine string
-type Input string
-type Output string
-
-type State int
-
 type Interface interface {
-	Do() chan State
+	Do() chan engines.State
 	Check() chan bool
-	GetOutput() map[string]Output
-}
-
-// FileEngine
-type FileEngine struct {
-	artifact Artifact          `json:"artifact",yaml:"artifact"`
-	inputs   []Input           `json:"inputs",yaml:"inputs"`
-	outputs  map[string]Output `json:"inputs",yaml:"inputs"`
-}
-
-func (e *FileEngine) Check() chan bool {
-	c := make(chan bool)
-	go func() {
-		fileIsPresent := true
-		if fileIsPresent {
-			c <- true
-		} else {
-			c <- false
-		}
-	}()
-	return c
-}
-
-func NewFileEngine(i map[string]interface{}) *FileEngine {
-	var artifact Artifact
-	for k, v := range i {
-		switch k {
-		case "artifact":
-			artifact = Artifact(v.(string))
-		}
-	}
-	return &FileEngine{artifact: artifact}
-}
-
-func (e *FileEngine) Do() chan State {
-	c := make(chan State)
-	log.Println("Do Method...", e)
-	return c
-}
-
-func (e *FileEngine) GetOutput() map[string]Output {
-	return map[string]Output{}
+	GetOutput() map[string]engines.Output
 }
