@@ -1,56 +1,64 @@
 package choreography
 
 import (
-	"github.com/owulveryck/khoreia/choreography/engines"
+	"log"
 )
 
 // A Node structure is the base structure of an execution node
 type Node struct {
-	ID         int               `json:"id",yaml:"id"`
-	Name       string            `json:"name",yaml:"name"`
-	Target     string            `json:"target",yaml:"target"`
-	Interfaces map[string]Action `json:"interfaces",yaml:"interfaces"`
-}
-
-func (n *Node) Create() Interface {
-	return n.Interfaces["create"].Do.Interface
-}
-
-// TODO: create all other func from the lifecycle
-
-type Action struct {
-	Do    Implementation `json:"do",yaml:"do"`
-	Check Implementation `json:"check",yaml:"check"`
-}
-
-type Implementation struct {
-	Engine    string `json:"engine",yaml:"engine"`
-	Interface Interface
+	ID         int                       `json:"id",yaml:"id"`
+	Name       string                    `json:"name",yaml:"name"`
+	Target     string                    `json:"target",yaml:"target"`
+	Interfaces map[string]Implementation `json:"interfaces",yaml:"interfaces"`
 }
 
 // We need to specialised the Unmarshaling because of the Interfaces field
-func (n *Implementation) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (n *Node) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	type node struct {
+		ID         int                    `json:"id",yaml:"id"`
+		Name       string                 `json:"name",yaml:"name"`
+		Target     string                 `json:"target",yaml:"target"`
+		Interfaces map[string]interface{} `json:"interfaces",yaml:"interfaces"`
+	}
 	type implementation map[string]map[string]interface{}
 	var temp implementation
 	if err := unmarshal(&temp); err != nil {
 		return err
 	}
-	var engine string
-	var e Interface
-	for key, val := range temp {
-		engine = key
-		f := func(val map[string]interface{}, f func(map[string]interface{}) *engines.FileEngine) *engines.FileEngine {
-			return f(val)
+	log.Println(temp)
+	/*
+		var engine string
+		var e Interface
+		for key, val := range temp {
+			engine = key
+			f := func(val map[string]interface{}, f func(map[string]interface{}) *engines.FileEngine) *engines.FileEngine {
+				return f(val)
+			}
+			e = f(val, engines.NewFileEngine)
 		}
-		e = f(val, engines.NewFileEngine)
-	}
-	n.Engine = engine
-	n.Interface = e
+		n.Engine = engine
+		n.Interface = e
+		return nil
+	*/
 	return nil
 }
 
-type Interface interface {
-	Do() chan engines.State
-	Check() chan bool
-	GetOutput() map[string]engines.Output
+func (n *Node) RequiredState() chan State {
+	states := make(map[string]chan bool, len(n.Interfaces))
+	for a, action := range n.Interfaces {
+		states[a] = action.Check()
+	}
+	return nil
+}
+
+// Run is a gorouting that will wait for an event and trigger the Do associated
+func (n *Node) Run() {
+	state := n.RequiredState()
+	for state := range state {
+		if intf, ok := n.Interfaces[state.(string)]; ok {
+			intf.Do()
+		} else {
+			log.Println("Error, don't know how to go to", state.(string))
+		}
+	}
 }

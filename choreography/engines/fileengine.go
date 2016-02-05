@@ -37,10 +37,8 @@ func NewFileEngine(i map[string]interface{}) *FileEngine {
 	return &FileEngine{artifact: artifact}
 }
 
-func (e *FileEngine) Do() chan State {
-	c := make(chan State)
+func (e *FileEngine) Do() {
 	log.Println("Do Method...", e)
-	return c
 }
 
 func (e *FileEngine) GetOutput() map[string]Output {

@@ -17,6 +17,8 @@
 
 package choreography
 
+type State interface{}
+
 var States = map[int]string{
 	Initial:     "initial",
 	Run:         "run",
