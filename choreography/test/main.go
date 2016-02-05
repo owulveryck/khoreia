@@ -20,9 +20,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%s\n", dat)
 	for _, n := range dat {
 		fmt.Println(n)
+		n.Create().Do()
 
 	}
 

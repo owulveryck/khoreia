@@ -12,10 +12,17 @@ type Node struct {
 	Interfaces map[string]Action `json:"interfaces",yaml:"interfaces"`
 }
 
+func (n *Node) Create() Interface {
+	return n.Interfaces["create"].Do.Interface
+}
+
+// TODO: create all other func from the lifecycle
+
 type Action struct {
 	Do    Implementation `json:"do",yaml:"do"`
 	Check Implementation `json:"check",yaml:"check"`
 }
+
 type Implementation struct {
 	Engine    string `json:"engine",yaml:"engine"`
 	Interface Interface
@@ -29,11 +36,14 @@ func (n *Implementation) UnmarshalYAML(unmarshal func(interface{}) error) error 
 		return err
 	}
 	var engine string
-	var e *FileEngine
+	var e Interface
 	for key, val := range temp {
-		log.Println(val)
 		engine = key
-		e.New(val)
+		f := func(val map[string]interface{}, f func(map[string]interface{}) FileEngine) FileEngine {
+			return f(val)
+		}
+		fe := f(val, NewFileEngine)
+		e = &fe
 	}
 	n.Engine = engine
 	n.Interface = e
@@ -77,18 +87,20 @@ func (e *FileEngine) Check() chan bool {
 	return c
 }
 
-func (e *FileEngine) New(i map[string]interface{}) {
+func NewFileEngine(i map[string]interface{}) FileEngine {
+	var artifact Artifact
 	for k, v := range i {
 		switch k {
 		case "artifact":
-			e.artifact = Artifact(v.(string))
+			artifact = Artifact(v.(string))
 		}
 	}
+	return FileEngine{artifact: artifact}
 }
 
 func (e *FileEngine) Do() chan State {
 	c := make(chan State)
-	log.Printf("Do method of the FileEngine Artifact:%v, Inputs: %v", e.artifact, e.inputs)
+	log.Println("Do Method...", e)
 	return c
 }
 

@@ -8,44 +8,47 @@
           artifact: /tmp/nodes/0/create
       do:
         file: 
-          artifact: test
-          args: 
-          - flag=/tmp/nodes/0/create
+          artifact: /tmp/nodes/0/create
+          inputs: null
           output: null
     configure:
       check:
-        artifact: /tmp/nodes/0/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/0/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: /tmp/nodes/0/configure
+          engine: nil
   deps:
   - nodes: 
     - 5
 - id: 1
   name: a
   target: test
-  actions:
+  interfaces:
     create:
       check:
-        artifact: /tmp/nodes/1/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/1/create
       do:
-        artifact: test
-        engine: nil
-        args: null
-        output: null
+        file: 
+          artifact: test
+          inputs: 
+          - flag=/tmp/nodes/1/create
+          output: null
     configure:
       check:
-        artifact: /tmp/nodes/1/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/1/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: test
+          engine: nil
+          output: null
   deps:
   - nodes: 
     - 5
@@ -53,25 +56,28 @@
 - id: 2
   name: a
   target: test
-  actions:
+  interfaces:
     create:
       check:
-        artifact: /tmp/nodes/2/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/2/create
       do:
-        artifact: test
-        engine: nil
-        args: null
-        output: null
+        file: 
+          artifact: test
+          inputs: 
+          - flag=/tmp/nodes/2/create
+          output: null
     configure:
       check:
-        artifact: /tmp/nodes/2/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/2/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: test
+          engine: nil
+          output: null
   deps:
   - nodes: 
     - 3
@@ -79,94 +85,107 @@
 - id: 3
   name: a
   target: test
-  actions:
+  interfaces:
     create:
       check:
-        artifact: /tmp/nodes/3/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/3/create
       do:
-        artifact: test
-        engine: nil
-        args: null
-        output: null
+        file: 
+          artifact: test
+          inputs: 
+          - flag=/tmp/nodes/3/create
+          output: null
     configure:
       check:
-        artifact: /tmp/nodes/3/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/3/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: test
+          engine: nil
+          output: null
+
 - id: 4
   name: a
   target: test
-  actions:
+  interfaces:
     create:
       check:
-        artifact: /tmp/nodes/4/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/4/create
       do:
-        artifact: test
-        engine: nil
-        args: null
-        output: null
+        file: 
+          artifact: test
+          inputs: 
+          - flag=/tmp/nodes/4/create
+          output: null
     configure:
       check:
-        artifact: /tmp/nodes/4/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/4/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: test
+          engine: nil
+          output: null
   deps:
   - nodes: 
     - 0
 - id: 5
   name: a
   target: test
-  actions:
+  interfaces:
     create:
       check:
-        artifact: /tmp/nodes/5/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/5/create
       do:
-        artifact: test
-        engine: nil
-        args: null
-        output: null
+        file: 
+          artifact: test
+          inputs: 
+          - flag=/tmp/nodes/5/create
+          output: null
     configure:
       check:
-        artifact: /tmp/nodes/5/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/5/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: test
+          engine: nil
+          output: null
 - id: 6
   name: a
   target: test
-  actions:
+  interfaces:
     create:
       check:
-        artifact: /tmp/nodes/6/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/6/create
       do:
-        artifact: test
-        engine: nil
-        args: null
-        output: null
+        file: 
+          artifact: test
+          inputs: 
+          - flag=/tmp/nodes/6/create
+          output: null
     configure:
       check:
-        artifact: /tmp/nodes/6/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/6/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: test
+          engine: nil
+          output: null
   deps:
   - nodes:
     - 1
@@ -175,22 +194,26 @@
 - id: 7
   name: a
   target: test
-  actions:
+  interfaces:
     create:
       check:
-        artifact: /tmp/nodes/7/create
-        engine: file
+        file:
+          artifact: /tmp/nodes/7/create
       do:
-        artifact: test
-        engine: nil
-        args: null
-        output: null
+        file: 
+          artifact: test
+          inputs: 
+          - flag=/tmp/nodes/7/create
+          output: null
     configure:
       check:
-        artifact: /tmp/nodes/7/configure
-        engine: file
+        file: 
+          artifact: /tmp/nodes/7/configure
+          engine: file
       do:
-        args: null
-        artifact: test
-        engine: nil
-        output: null
+        file:
+          inputs: null
+          artifact: test
+          engine: nil
+          output: null
+
