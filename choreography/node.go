@@ -1,5 +1,5 @@
 // Olivier Wulveryck - author of khoreia
-// Copyright (C) 2015 Olivier Wulveryck
+// Copyright (C) 2016 Olivier Wulveryck
 //
 // This file is part of the khoreia project and
 // is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ package choreography
 import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/engines"
-	"log"
 )
 
 // A Node structure is the base structure of an execution node
@@ -89,6 +88,12 @@ func (i *Interface) UnmarshalYAML(unmarshal func(interface{}) error) error {
 					return nil, err
 				}
 				implementer = impl
+			case "nil":
+				impl, err := NewNilEngine(value)
+				if err != nil {
+					return nil, err
+				}
+				implementer = impl
 			}
 		}
 		// Create a new implementer based on the engine name
@@ -115,7 +120,6 @@ func (i *Interface) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 
 	}
-	log.Println("DEBUG", t)
 	return nil
 }
 
