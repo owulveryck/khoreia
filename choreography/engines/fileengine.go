@@ -2,6 +2,7 @@ package engines
 
 import (
 	"golang.org/x/exp/inotify"
+	"io/ioutil"
 	"log"
 	"path/filepath"
 )
@@ -46,14 +47,14 @@ func (f *FileEngine) Check(stop chan struct{}) chan bool {
 		for {
 			select {
 			case <-stop:
+				log.Println("Stop")
+				return
 			case ev := <-watcher.Event:
 				if ev.Name == f.File {
 					switch ev.Mask {
 					case inotify.IN_CREATE:
-						log.Println("File created")
 						c <- true
 					case inotify.IN_DELETE:
-						log.Println("File deleted")
 						c <- false
 					}
 				}
@@ -66,7 +67,10 @@ func (f *FileEngine) Check(stop chan struct{}) chan bool {
 	return c
 }
 func (e *FileEngine) Do() {
-	log.Println("Do Method...", e)
+	err := ioutil.WriteFile(e.File, []byte{}, 0644)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (e *FileEngine) GetOutput() interface{} {

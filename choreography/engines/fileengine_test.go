@@ -15,23 +15,24 @@ func TestCheck(t *testing.T) {
 	go func() {
 		for evt := range check {
 			t.Log("Event: ", evt)
+			if !evt {
+				t.Log("Creating file")
+				f.Do()
+			}
 		}
 	}()
+	// Adding file
+	err := ioutil.WriteFile(f.File, []byte{}, 0644)
+	if err != nil {
+		t.Log(err)
+	}
 	for i := 0; i < 10; i++ {
-		// create the file /tmp/bla
-		t.Log("Creating file")
-		d1 := []byte("hello go\n")
-		err := ioutil.WriteFile(testFile, d1, 0644)
-		if err != nil {
-			t.Log(err)
-		}
 		// remove the file /tmp/bla
 		t.Log("Removing file")
 		os.Remove(testFile)
+		// stop the routine
 	}
 
-	// stop the routine
-	time.Sleep(100 * time.Millisecond)
-
+	time.Sleep(1000 * time.Millisecond)
 	done <- struct{}{}
 }
