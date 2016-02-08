@@ -9,18 +9,13 @@
       do:
         file: 
           path: /tmp/nodes/0/create
-          inputs: null
-          output: null
     configure:
       check:
         file: 
           path: /tmp/nodes/0/configure
-          engine: file
       do:
         file:
-          inputs: null
           path: /tmp/nodes/0/configure
-          engine: nil
   deps:
   - nodes: 
     - 5
@@ -34,21 +29,14 @@
           path: /tmp/nodes/1/create
       do:
         file: 
-          path: test
-          inputs: 
-          - flag=/tmp/nodes/1/create
-          output: null
+          path: /tmp/nodes/1/create
     configure:
       check:
         file: 
           path: /tmp/nodes/1/configure
-          engine: file
       do:
         file:
-          inputs: null
-          path: test
-          engine: nil
-          output: null
+          path: /tmp/nodes/1/configure
   deps:
   - nodes: 
     - 5
@@ -63,21 +51,14 @@
           path: /tmp/nodes/2/create
       do:
         file: 
-          path: test
-          inputs: 
-          - flag=/tmp/nodes/2/create
-          output: null
+          path: /tmp/nodes/2/create
     configure:
       check:
         file: 
           path: /tmp/nodes/2/configure
-          engine: file
       do:
         file:
-          inputs: null
-          path: test
-          engine: nil
-          output: null
+          path: /tmp/nodes/2/configure
   deps:
   - nodes: 
     - 3
@@ -92,21 +73,14 @@
           path: /tmp/nodes/3/create
       do:
         file: 
-          path: test
-          inputs: 
-          - flag=/tmp/nodes/3/create
-          output: null
+          path: /tmp/nodes/3/create
     configure:
       check:
         file: 
           path: /tmp/nodes/3/configure
-          engine: file
       do:
         file:
-          inputs: null
-          path: test
-          engine: nil
-          output: null
+          path: /tmp/nodes/3/configure
 
 - id: 4
   name: a
@@ -118,21 +92,14 @@
           path: /tmp/nodes/4/create
       do:
         file: 
-          path: test
-          inputs: 
-          - flag=/tmp/nodes/4/create
-          output: null
+          path: /tmp/nodes/4/create
     configure:
       check:
         file: 
           path: /tmp/nodes/4/configure
-          engine: file
       do:
         file:
-          inputs: null
-          path: test
-          engine: nil
-          output: null
+          path: /tmp/nodes/4/configure
   deps:
   - nodes: 
     - 0
@@ -146,21 +113,14 @@
           path: /tmp/nodes/5/create
       do:
         file: 
-          path: test
-          inputs: 
-          - flag=/tmp/nodes/5/create
-          output: null
+          path: /tmp/nodes/5/create
     configure:
       check:
         file: 
           path: /tmp/nodes/5/configure
-          engine: file
       do:
         file:
-          inputs: null
-          path: test
-          engine: nil
-          output: null
+          path: /tmp/nodes/5/configure
 - id: 6
   name: a
   target: test
@@ -171,21 +131,14 @@
           path: /tmp/nodes/6/create
       do:
         file: 
-          path: test
-          inputs: 
-          - flag=/tmp/nodes/6/create
-          output: null
+          path: /tmp/nodes/6/create
     configure:
       check:
         file: 
           path: /tmp/nodes/6/configure
-          engine: file
       do:
         file:
-          inputs: null
-          path: test
-          engine: nil
-          output: null
+          path: /tmp/nodes/6/configure
   deps:
   - nodes:
     - 1
@@ -201,19 +154,12 @@
           path: /tmp/nodes/7/create
       do:
         file: 
-          path: test
-          inputs: 
-          - flag=/tmp/nodes/7/create
-          output: null
+          path: /tmp/nodes/7/create
     configure:
       check:
         file: 
           path: /tmp/nodes/7/configure
-          engine: file
       do:
         file:
-          inputs: null
-          path: test
-          engine: nil
-          output: null
+          path: /tmp/nodes/7/configure
 
