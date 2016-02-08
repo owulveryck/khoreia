@@ -21,6 +21,6 @@ package choreography
 // when needed by its Interface
 type Implementer interface {
 	Do() // Actuall
-	Check() chan bool
+	Check(chan struct{}) chan bool
 	GetOutput() interface{}
 }

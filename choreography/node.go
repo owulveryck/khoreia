@@ -17,7 +17,11 @@
 
 package choreography
 
-import ()
+import (
+	"fmt"
+	"github.com/owulveryck/khoreia/choreography/engines"
+	"log"
+)
 
 // A Node structure is the base structure of an execution node
 type Node struct {
@@ -30,14 +34,6 @@ type Node struct {
 
 type Deps interface{}
 
-type Lifecycle interface {
-	Create()
-	Configure()
-	Start()
-	Stop()
-	Delete()
-}
-
 type Interface struct {
 	Do    Implementer `json:"do"`
 	Check Implementer `json:"check"`
@@ -46,7 +42,8 @@ type Interface struct {
 // Run calls Check.Check() (which runs in a goroutine) and wait fo all the conditions
 // to be ok to call a Do.Do()
 func (i *Interface) Run(conditions ...chan bool) chan struct{} {
-	check := i.Check.Check()
+	done := make(chan struct{})
+	check := i.Check.Check(done)
 	stop := make(chan struct{})
 	go func() {
 		for {
@@ -65,11 +62,60 @@ func (i *Interface) Run(conditions ...chan bool) chan struct{} {
 
 // We need to specialised the Unmarshaling because of the Interfaces field
 func (i *Interface) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	type intf map[string]interface{}
-	var temp intf
-	if err := unmarshal(&temp); err != nil {
+	// attributes is a key/value pair of attributes of an engine
+	// eg: filePath = "/tmp/truc"
+	type attributes map[string]interface{}
+	// the intf is a map of map.
+	// the first map's key is Do or Check
+	// The second map's key is the engine type
+	// The interface{} is all the definition of the engine to be passed to the
+	// New function
+	type intf map[string]map[string]attributes
+	var t intf
+	if err := unmarshal(&t); err != nil {
 		return err
 	}
+
+	// This function takes a map as input
+	// The key is the engine name and the input represent the arguments
+	f := func(i map[string]attributes) (Implementer, error) {
+		var implementer Implementer
+		// Get the value of the engine
+		for engine, value := range i {
+			switch engine {
+			case "file":
+				impl, err := engines.NewFileEngine(value)
+				if err != nil {
+					return nil, err
+				}
+				implementer = impl
+			}
+		}
+		// Create a new implementer based on the engine name
+
+		return implementer, nil
+	}
+	// key = check | do, otherwise error
+	for key, value := range t {
+		switch key {
+		case "do":
+			val, err := f(value)
+			if err != nil {
+				return err
+			}
+			i.Do = val
+		case "check":
+			val, err := f(value)
+			if err != nil {
+				return err
+			}
+			i.Check = val
+		default:
+			return fmt.Errorf("Unknown method %v", key)
+		}
+
+	}
+	log.Println("DEBUG", t)
 	return nil
 }
 

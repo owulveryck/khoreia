@@ -1,6 +1,7 @@
 package engines
 
 import (
+	"fmt"
 	"golang.org/x/exp/inotify"
 	"io/ioutil"
 	"log"
@@ -12,18 +13,20 @@ import (
 // FileEngine takes a single file as argument, it checks for its presence or create it
 // It relies on the libnotify package
 type FileEngine struct {
-	File string `json:"file",yaml:"file"`
+	File string `json:"path",yaml:"path"`
 }
 
-func NewFileEngine(i map[string]interface{}) *FileEngine {
+func NewFileEngine(i map[string]interface{}) (*FileEngine, error) {
 	var file string
 	for k, v := range i {
 		switch k {
-		case "file":
+		case "path":
 			file = v.(string)
+		default:
+			return nil, fmt.Errorf("Unknown field %v (%v) for  engine FileEngine", k, v)
 		}
 	}
-	return &FileEngine{File: file}
+	return &FileEngine{File: file}, nil
 }
 
 // Check if f.File is present and send an event on the channel if it
