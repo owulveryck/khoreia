@@ -24,6 +24,45 @@ type Node struct {
 	Target     string               `json:"target",yaml:"target"`
 	Interfaces map[string]Interface `json:"interfaces",yaml:"interfaces"`
 	Deps       []Deps               `json:"deps",yaml:"deps"`
+	State      State
 }
 
 type Deps interface{}
+
+// Lifecycler interface implements a Startup and a Shutdown sequence
+type Lifecycler interface {
+	Startup()
+	Shutdown()
+}
+
+// Shutdown executes all the operations <= Delete
+func (n *Node) Shutdown() {
+	n.Create()
+	n.Configure()
+	n.Start()
+	n.Stop()
+	n.Delete()
+}
+
+// Startup executes all the operations <= Start
+func (n *Node) Startup() {
+	n.Create()
+	n.Configure()
+	n.Start()
+}
+
+func (n *Node) Create()    {}
+func (n *Node) Configure() {}
+func (n *Node) Start()     {}
+func (n *Node) Stop()      {}
+func (n *Node) Delete()    {}
+
+func (n *Node) Run() {
+	switch n.State {
+	case Create:
+	case Configure:
+	case Start:
+	case Stop:
+	case Delete:
+	}
+}

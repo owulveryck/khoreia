@@ -1,0 +1,165 @@
+- id: 0
+  name: a
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/0/create
+      do:
+        file: 
+          path: /tmp/nodes/0/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/0/configure
+      do:
+        file:
+          path: /tmp/nodes/0/configure
+  deps:
+  - nodes: 
+    - 5
+- id: 1
+  name: b
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/1/create
+      do:
+        file: 
+          path: /tmp/nodes/1/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/1/configure
+      do:
+        file:
+          path: /tmp/nodes/1/configure
+  deps:
+  - nodes: 
+    - 5
+    - 0
+- id: 2
+  name: c
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/2/create
+      do:
+        file: 
+          path: /tmp/nodes/2/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/2/configure
+      do:
+        file:
+          path: /tmp/nodes/2/configure
+  deps:
+  - nodes: 
+    - 3
+    - 5
+- id: 3
+  name: d
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/3/create
+      do:
+        file: 
+          path: /tmp/nodes/3/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/3/configure
+      do:
+        file:
+          path: /tmp/nodes/3/configure
+
+- id: 4
+  name: e
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/4/create
+      do:
+        file: 
+          path: /tmp/nodes/4/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/4/configure
+      do:
+        file:
+          path: /tmp/nodes/4/configure
+  deps:
+  - nodes: 
+    - 0
+- id: 5
+  name: f
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/5/create
+      do:
+        file: 
+          path: /tmp/nodes/5/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/5/configure
+      do:
+        file:
+          path: /tmp/nodes/5/configure
+- id: 6
+  name: g
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/6/create
+      do:
+        file: 
+          path: /tmp/nodes/6/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/6/configure
+      do:
+        file:
+          path: /tmp/nodes/6/configure
+  deps:
+  - nodes:
+    - 1
+    - 3
+    - 7
+- id: 7
+  name: h
+  target: test
+  interfaces:
+    create:
+      check:
+        file:
+          path: /tmp/nodes/7/create
+      do:
+        file: 
+          path: /tmp/nodes/7/create
+    configure:
+      check:
+        file: 
+          path: /tmp/nodes/7/configure
+      do:
+        file:
+          path: /tmp/nodes/7/configure
+

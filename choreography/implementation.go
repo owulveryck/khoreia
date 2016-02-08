@@ -20,6 +20,7 @@ package choreography
 import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/engines"
+	"log"
 )
 
 // Objects implementing the Implementer interface will get their method called by a node
@@ -47,7 +48,10 @@ func (i *Interface) Run(conditions ...chan bool) chan struct{} {
 			case <-stop:
 				return
 			case flag := <-check:
-				if flag {
+				log.Printf("Received event: %v", flag)
+				if !flag {
+					// TODO check if all the conditions are met
+					log.Printf("Calling Do\n")
 					i.Do.Do()
 				}
 			}

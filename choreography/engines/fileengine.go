@@ -5,6 +5,7 @@ import (
 	"golang.org/x/exp/inotify"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 )
 
@@ -47,6 +48,13 @@ func (f *FileEngine) Check(stop chan struct{}) chan bool {
 	}
 	go func() {
 		defer close(c)
+		// Send initial event
+		if _, err := os.Stat(f.File); os.IsNotExist(err) {
+			// path/to/whatever does not exist
+			c <- false
+		} else {
+			c <- true
+		}
 		for {
 			select {
 			case <-stop:
