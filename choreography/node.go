@@ -17,11 +17,7 @@
 
 package choreography
 
-import (
-	"github.com/kr/pretty"
-	//"github.com/owulveryck/khoreia/choreography/engines"
-	//"log"
-)
+import ()
 
 // A Node structure is the base structure of an execution node
 type Node struct {
@@ -29,8 +25,10 @@ type Node struct {
 	Name       string               `json:"name",yaml:"name"`
 	Target     string               `json:"target",yaml:"target"`
 	Interfaces map[string]Interface `json:"interfaces",yaml:"interfaces"`
-	Deps       []int                `json:"deps",yaml:"deps"`
+	Deps       []Deps               `json:"deps",yaml:"deps"`
 }
+
+type Deps interface{}
 
 type Lifecycle interface {
 	Create()
@@ -66,29 +64,11 @@ func (i *Interface) Run(conditions ...chan bool) chan struct{} {
 }
 
 // We need to specialised the Unmarshaling because of the Interfaces field
-func (n *Node) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	type node struct {
-		ID         int                    `json:"id",yaml:"id"`
-		Name       string                 `json:"name",yaml:"name"`
-		Target     string                 `json:"target",yaml:"target"`
-		Interfaces map[string]interface{} `json:"interfaces",yaml:"interfaces"`
-	}
-	//type implementation map[string]map[string]interface{}
-	var temp node
+func (i *Interface) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	type intf map[string]interface{}
+	var temp intf
 	if err := unmarshal(&temp); err != nil {
 		return err
-	}
-	//pretty.Log("DEBUG", pretty.Formatter(temp.Interfaces))
-	//var engine string
-	//var e Implementation
-	for _, val := range temp.Interfaces {
-		pretty.Log("DEBUG", pretty.Formatter(val))
-		//engine = key
-		//f := func(val map[string]interface{}, f func(interface{}) *engines.FileEngine) Implementation {
-		//	return f(val)
-		//}
-		//e = f(val, engines.NewFileEngine)
-		//temp.Interfaces[key] = e
 	}
 	return nil
 }
