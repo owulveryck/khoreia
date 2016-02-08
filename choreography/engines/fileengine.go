@@ -13,6 +13,17 @@ type FileEngine struct {
 	outputs  map[string]Output `json:"inputs",yaml:"inputs"`
 }
 
+func NewFileEngine(i map[string]interface{}) *FileEngine {
+	var artifact Artifact
+	for k, v := range i {
+		switch k {
+		case "artifact":
+			artifact = Artifact(v.(string))
+		}
+	}
+	return &FileEngine{artifact: artifact}
+}
+
 func (e *FileEngine) Check() chan bool {
 	c := make(chan bool)
 	go func() {
@@ -25,18 +36,6 @@ func (e *FileEngine) Check() chan bool {
 	}()
 	return c
 }
-
-func NewFileEngine(i map[string]interface{}) *FileEngine {
-	var artifact Artifact
-	for k, v := range i {
-		switch k {
-		case "artifact":
-			artifact = Artifact(v.(string))
-		}
-	}
-	return &FileEngine{artifact: artifact}
-}
-
 func (e *FileEngine) Do() {
 	log.Println("Do Method...", e)
 }

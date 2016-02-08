@@ -22,7 +22,7 @@ func main() {
 	}
 	for _, n := range dat {
 		fmt.Println(n)
-		n.Create().Do()
+		//n.Create().Do()
 
 	}
 
