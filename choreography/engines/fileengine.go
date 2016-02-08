@@ -6,25 +6,25 @@ import (
 
 /* Package engines implements the Interface mechanism*/
 
-// FileEngine
+// FileEngine takes a single file as argument, it checks for its presence or create if
 type FileEngine struct {
-	artifact Artifact          `json:"artifact",yaml:"artifact"`
-	inputs   []Input           `json:"inputs",yaml:"inputs"`
-	outputs  map[string]Output `json:"inputs",yaml:"inputs"`
+	File string `json:"file",yaml:"file"`
 }
 
 func NewFileEngine(i map[string]interface{}) *FileEngine {
-	var artifact Artifact
+	var file string
 	for k, v := range i {
 		switch k {
-		case "artifact":
-			artifact = Artifact(v.(string))
+		case "file":
+			file = v.(string)
 		}
 	}
-	return &FileEngine{artifact: artifact}
+	return &FileEngine{File: file}
 }
 
-func (e *FileEngine) Check() chan bool {
+// Check if f.File is present and send an event on the channel if it
+// appears or disappear
+func (f *FileEngine) Check() chan bool {
 	c := make(chan bool)
 	go func() {
 		fileIsPresent := true
@@ -40,6 +40,6 @@ func (e *FileEngine) Do() {
 	log.Println("Do Method...", e)
 }
 
-func (e *FileEngine) GetOutput() map[string]Output {
-	return map[string]Output{}
+func (e *FileEngine) GetOutput() interface{} {
+	return nil
 }

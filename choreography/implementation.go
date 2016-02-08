@@ -17,14 +17,10 @@
 
 package choreography
 
-import (
-	"github.com/owulveryck/khoreia/choreography/engines"
-)
-
 // Objects implementing the Implementer interface will get their method called by a node
 // when needed by its Interface
 type Implementer interface {
 	Do() // Actuall
 	Check() chan bool
-	GetOutput() map[string]engines.Output
+	GetOutput() interface{}
 }
