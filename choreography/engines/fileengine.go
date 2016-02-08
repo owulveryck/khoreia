@@ -1,12 +1,15 @@
 package engines
 
 import (
+	"golang.org/x/exp/inotify"
 	"log"
+	"path/filepath"
 )
 
 /* Package engines implements the Interface mechanism*/
 
-// FileEngine takes a single file as argument, it checks for its presence or create if
+// FileEngine takes a single file as argument, it checks for its presence or create it
+// It relies on the libnotify package
 type FileEngine struct {
 	File string `json:"file",yaml:"file"`
 }
@@ -24,14 +27,40 @@ func NewFileEngine(i map[string]interface{}) *FileEngine {
 
 // Check if f.File is present and send an event on the channel if it
 // appears or disappear
-func (f *FileEngine) Check() chan bool {
+func (f *FileEngine) Check(stop chan struct{}) chan bool {
 	c := make(chan bool)
+	watcher, err := inotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+
+	}
+
+	log.Println("Watching", f.File)
+	err = watcher.Watch(filepath.Dir(f.File))
+	if err != nil {
+		log.Fatal(err)
+
+	}
 	go func() {
-		fileIsPresent := true
-		if fileIsPresent {
-			c <- true
-		} else {
-			c <- false
+		defer close(c)
+		for {
+			select {
+			case <-stop:
+			case ev := <-watcher.Event:
+				if ev.Name == f.File {
+					switch ev.Mask {
+					case inotify.IN_CREATE:
+						log.Println("File created")
+						c <- true
+					case inotify.IN_DELETE:
+						log.Println("File deleted")
+						c <- false
+					}
+				}
+			case err := <-watcher.Error:
+				log.Println("error:", err)
+
+			}
 		}
 	}()
 	return c
