@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/engines"
 	"github.com/owulveryck/khoreia/choreography/event"
-	"log"
+	//"log"
 )
 
 // Objects implementing the Implementer interface will get their method called by a node
@@ -50,7 +50,7 @@ func (i *Interface) Run(conditions ...chan bool) chan struct{} {
 			case <-stop:
 				return
 			case evt := <-check:
-				log.Printf("Received event %v", evt.Msg)
+				//log.Printf("Received event %v", evt.Msg)
 				if !evt.IsDone {
 					// TODO check if all the conditions are met
 					i.Do.Do()

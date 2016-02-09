@@ -41,7 +41,7 @@ func (f *FileEngine) Check(stop chan struct{}) chan event.Event {
 
 	}
 
-	log.Println("Watching", f.File)
+	//log.Println("Watching", f.File)
 	err = watcher.Watch(filepath.Dir(f.File))
 	if err != nil {
 		log.Fatal(err)
@@ -83,7 +83,7 @@ func (f *FileEngine) Check(stop chan struct{}) chan event.Event {
 	return c
 }
 func (e *FileEngine) Do() {
-	log.Println("Writing file", e)
+	//log.Println("Writing file", e)
 	err := ioutil.WriteFile(e.File, []byte{}, 0644)
 	if err != nil {
 		log.Println(err)

@@ -27,21 +27,10 @@ func main() {
 	// Temp: for debug purpose
 	for _, node := range nodes {
 		for _, v := range node.Interfaces {
-
-			/*
-				v.Do.Do()
-				go func(v choreography.Interface) {
-					c := v.Check.Check(nil)
-					for e := range c {
-						if !e.IsDone {
-							v.Do.Do()
-						}
-					}
-				}(v)
-			*/
 			v.Run()
 		}
 	}
+	log.Println("Let's dance")
 
 	stop := make(chan struct{})
 	<-stop
