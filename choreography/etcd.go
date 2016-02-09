@@ -47,7 +47,6 @@ func etcdWatch(ctx context.Context, w etcd.Watcher) chan *event.Event {
 			default:
 				log.Printf("Unknown value %v, must be ai boolean", resp.Node.Value)
 			}
-			log.Println("Event received", resp)
 			c <- &event.Event{ret, ""}
 		}
 	}()
