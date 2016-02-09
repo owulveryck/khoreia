@@ -34,8 +34,14 @@ func main() {
 	for _, node := range nodes {
 		for k, v := range node.Interfaces {
 			etcdPath := fmt.Sprintf("/%s/nodes/%s/%s", u1, node.ID, k)
+			if k == "configure" {
+				dep := fmt.Sprintf("/%s/nodes/%s/%s", u1, node.ID, "create")
+				v.Run(ctx, etcdPath, dep)
+			} else {
+				v.Run(ctx, etcdPath)
+
+			}
 			//dependencies := []string{"/", "//"}
-			v.Run(ctx, etcdPath, etcdPath)
 		}
 	}
 	log.Println("Let's dance")

@@ -23,7 +23,7 @@ import (
 	"github.com/owulveryck/khoreia/choreography/engines"
 	"github.com/owulveryck/khoreia/choreography/event"
 	"golang.org/x/net/context"
-	"log"
+	//"log"
 	"reflect"
 	"strconv"
 )
@@ -58,8 +58,10 @@ func (i *Interface) Run(ctx context.Context, etcdPath string, dependencies ...st
 		chans = append(chans, check)
 		// Reference http://play.golang.org/p/8zwvSk4kjx
 		cases := make([]reflect.SelectCase, len(chans))
+		allCheck := make(map[chan *event.Event]bool, len(chans))
 		for i, ch := range chans {
 			cases[i] = reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(ch)}
+			allCheck[ch] = false
 		}
 
 		remaining := len(cases)
@@ -72,16 +74,24 @@ func (i *Interface) Run(ctx context.Context, etcdPath string, dependencies ...st
 				continue
 
 			}
-			log.Printf("Read from channel %#v and received %s\n", chans[chosen], value)
+			//log.Printf("Read from channel %#v and received %s\n", chans[chosen], value)
+			evt := value.Elem().FieldByName("IsDone").Bool()
 			if chans[chosen] == check {
-				evt := value.Elem().FieldByName("IsDone").Bool()
-				kapi.Set(ctx, etcdPath, strconv.FormatBool(evt), nil)
-				if !evt {
-					// TODO check if all the conditions are met
-					i.Do.Do(ctx)
-				} else {
 
+				// If its my own check, I can run if its true
+				allCheck[chans[chosen]] = !evt
+				kapi.Set(ctx, etcdPath, strconv.FormatBool(evt), nil)
+			} else {
+				allCheck[chans[chosen]] = evt
+			}
+			run := true
+			for _, r := range allCheck {
+				if r == false {
+					run = false
 				}
+			}
+			if run {
+				i.Do.Do(ctx)
 			}
 		}
 

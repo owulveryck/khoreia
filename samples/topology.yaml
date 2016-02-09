@@ -7,8 +7,7 @@
         file:
           path: /tmp/nodes/0/create
       do:
-        file: 
-          path: /tmp/nodes/0/create
+        nil: 
     configure:
       check:
         file: 
