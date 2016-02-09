@@ -26,22 +26,20 @@ func main() {
 
 	// Temp: for debug purpose
 	for _, node := range nodes {
-		for i, v := range node.Interfaces {
+		for _, v := range node.Interfaces {
 
-			log.Printf("calling Do() on %v %v %v", node.Name, i, v)
-			v.Do.Do()
-			log.Printf("calling Check() on %v %v %v", node.Name, i, v)
-			go func(v choreography.Interface) {
-				c := v.Check.Check(nil)
-				for e := range c {
-					log.Printf("Received Event on %v %v %v: %v", node.Name, i, v, e)
-					if !e.IsDone {
-						log.Printf("Calling v.Do.Do()", v)
-						v.Do.Do()
+			/*
+				v.Do.Do()
+				go func(v choreography.Interface) {
+					c := v.Check.Check(nil)
+					for e := range c {
+						if !e.IsDone {
+							v.Do.Do()
+						}
 					}
-				}
-			}(v)
-			//v.Run()
+				}(v)
+			*/
+			v.Run()
 		}
 	}
 

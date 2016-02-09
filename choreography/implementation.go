@@ -40,10 +40,11 @@ type Interface struct {
 // Run calls Check.Check() (which runs in a goroutine) and wait fo all the conditions
 // to be ok to call a Do.Do()
 func (i *Interface) Run(conditions ...chan bool) chan struct{} {
-	done := make(chan struct{})
-	check := i.Check.Check(done)
 	stop := make(chan struct{})
-	go func() {
+	go func(i Interface) {
+		done := make(chan struct{})
+		check := i.Check.Check(done)
+		i.Do.Do()
 		for {
 			select {
 			case <-stop:
@@ -56,7 +57,7 @@ func (i *Interface) Run(conditions ...chan bool) chan struct{} {
 				}
 			}
 		}
-	}()
+	}(*i)
 	return stop
 }
 
