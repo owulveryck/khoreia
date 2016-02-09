@@ -21,15 +21,16 @@ import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/engines"
 	"github.com/owulveryck/khoreia/choreography/event"
+	"golang.org/x/net/context"
 	//"log"
 )
 
 // Objects implementing the Implementer interface will get their method called by a node
 // when needed by its Interface
 type Implementer interface {
-	Do() // Actuall
-	Check(chan struct{}) chan event.Event
-	GetOutput() interface{}
+	Do(context.Context) // Actuall
+	Check(context.Context, chan struct{}) chan event.Event
+	GetOutput(context.Context) interface{}
 }
 
 type Interface struct {
@@ -39,21 +40,21 @@ type Interface struct {
 
 // Run calls Check.Check() (which runs in a goroutine) and wait fo all the conditions
 // to be ok to call a Do.Do()
-func (i *Interface) Run(conditions ...chan bool) chan struct{} {
+func (i *Interface) Run(ctx context.Context, etcdPath string, conditions ...chan bool) chan struct{} {
 	stop := make(chan struct{})
 	go func(i Interface) {
 		done := make(chan struct{})
-		check := i.Check.Check(done)
-		i.Do.Do()
+
+		check := i.Check.Check(ctx, done)
+		i.Do.Do(ctx)
 		for {
 			select {
 			case <-stop:
 				return
 			case evt := <-check:
-				//log.Printf("Received event %v", evt.Msg)
 				if !evt.IsDone {
 					// TODO check if all the conditions are met
-					i.Do.Do()
+					i.Do.Do(ctx)
 				}
 			}
 		}

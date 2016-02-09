@@ -1,13 +1,13 @@
 package main
 
 import (
-	//"fmt"
-	//"github.com/gosuri/uitable"
+	"fmt"
 	"github.com/owulveryck/khoreia/choreography"
+	"github.com/satori/go.uuid"
+	"golang.org/x/net/context"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
-	//"time"
 )
 
 func main() {
@@ -24,10 +24,16 @@ func main() {
 		log.Println(err)
 	}
 
+	// Generate a uuid
+	u1 := uuid.NewV4()
+	ctx := context.TODO()
+
 	// Temp: for debug purpose
 	for _, node := range nodes {
-		for _, v := range node.Interfaces {
-			v.Run()
+		for k, v := range node.Interfaces {
+			etcdPath := fmt.Sprintf("/%s/nodes/%s/%s", u1, node.Name, k)
+			dependencyPath := []string{"/", "//"}
+			v.Run(ctx, etcdPath)
 		}
 	}
 	log.Println("Let's dance")

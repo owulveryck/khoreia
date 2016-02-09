@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/event"
 	"golang.org/x/exp/inotify"
+	"golang.org/x/net/context"
 	"io/ioutil"
 	"log"
 	"os"
@@ -33,7 +34,7 @@ func NewFileEngine(i map[string]interface{}) (*FileEngine, error) {
 
 // Check if f.File is present and send an event on the channel if it
 // appears or disappear
-func (f *FileEngine) Check(stop chan struct{}) chan event.Event {
+func (f *FileEngine) Check(ctx context.Context, stop chan struct{}) chan event.Event {
 	c := make(chan event.Event)
 	watcher, err := inotify.NewWatcher()
 	if err != nil {
@@ -82,7 +83,7 @@ func (f *FileEngine) Check(stop chan struct{}) chan event.Event {
 	}()
 	return c
 }
-func (e *FileEngine) Do() {
+func (e *FileEngine) Do(ctx context.Context) {
 	//log.Println("Writing file", e)
 	err := ioutil.WriteFile(e.File, []byte{}, 0644)
 	if err != nil {
@@ -90,6 +91,6 @@ func (e *FileEngine) Do() {
 	}
 }
 
-func (e *FileEngine) GetOutput() interface{} {
+func (e *FileEngine) GetOutput(ctx context.Context) interface{} {
 	return nil
 }

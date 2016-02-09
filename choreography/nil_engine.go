@@ -3,6 +3,7 @@ package choreography
 import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/event"
+	"golang.org/x/net/context"
 )
 
 // The nil engine returns true to every check, and do nothing
@@ -24,7 +25,7 @@ func NewNilEngine(i map[string]interface{}) (*NilEngine, error) {
 
 // Check if f.File is present and send an event on the channel if it
 // appears or disappear
-func (f *NilEngine) Check(stop chan struct{}) chan event.Event {
+func (f *NilEngine) Check(ctx context.Context, stop chan struct{}) chan event.Event {
 	c := make(chan event.Event)
 
 	go func() {
@@ -35,9 +36,9 @@ func (f *NilEngine) Check(stop chan struct{}) chan event.Event {
 	}()
 	return c
 }
-func (e *NilEngine) Do() {
+func (e *NilEngine) Do(ctx context.Context) {
 }
 
-func (e *NilEngine) GetOutput() interface{} {
+func (e *NilEngine) GetOutput(ctx context.Context) interface{} {
 	return nil
 }
