@@ -34,8 +34,8 @@ func NewFileEngine(i map[string]interface{}) (*FileEngine, error) {
 
 // Check if f.File is present and send an event on the channel if it
 // appears or disappear
-func (f *FileEngine) Check(ctx context.Context, stop chan struct{}) chan event.Event {
-	c := make(chan event.Event)
+func (f *FileEngine) Check(ctx context.Context, stop chan struct{}) chan *event.Event {
+	c := make(chan *event.Event)
 	watcher, err := inotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -53,9 +53,9 @@ func (f *FileEngine) Check(ctx context.Context, stop chan struct{}) chan event.E
 		// Send initial event
 		if _, err := os.Stat(f.File); os.IsNotExist(err) {
 			// path/to/whatever does not exist
-			c <- event.Event{IsDone: false, Msg: fmt.Sprintf("Initial check, %v is not present", f.File)}
+			c <- &event.Event{IsDone: false, Msg: fmt.Sprintf("Initial check, %v is not present", f.File)}
 		} else {
-			c <- event.Event{IsDone: true, Msg: fmt.Sprintf("Initial check, %v is present", f.File)}
+			c <- &event.Event{IsDone: true, Msg: fmt.Sprintf("Initial check, %v is present", f.File)}
 		}
 		for {
 			select {
@@ -64,8 +64,8 @@ func (f *FileEngine) Check(ctx context.Context, stop chan struct{}) chan event.E
 				return
 			case ev := <-watcher.Event:
 				if ev.Name == f.File {
-					var evt event.Event
-					evt = event.Event{IsDone: true, Msg: fmt.Sprintf("Event %v ", ev)}
+					var evt *event.Event
+					evt = &event.Event{IsDone: true, Msg: fmt.Sprintf("Event %v ", ev)}
 					switch ev.Mask {
 					case inotify.IN_CREATE:
 						evt.IsDone = true

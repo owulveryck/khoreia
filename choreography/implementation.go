@@ -19,17 +19,20 @@ package choreography
 
 import (
 	"fmt"
+	etcd "github.com/coreos/etcd/client"
 	"github.com/owulveryck/khoreia/choreography/engines"
 	"github.com/owulveryck/khoreia/choreography/event"
 	"golang.org/x/net/context"
-	//"log"
+	"log"
+	"reflect"
+	"strconv"
 )
 
 // Objects implementing the Implementer interface will get their method called by a node
 // when needed by its Interface
 type Implementer interface {
 	Do(context.Context) // Actuall
-	Check(context.Context, chan struct{}) chan event.Event
+	Check(context.Context, chan struct{}) chan *event.Event
 	GetOutput(context.Context) interface{}
 }
 
@@ -40,18 +43,55 @@ type Interface struct {
 
 // Run calls Check.Check() (which runs in a goroutine) and wait fo all the conditions
 // to be ok to call a Do.Do()
-func (i *Interface) Run(ctx context.Context, etcdPath string, conditions ...chan bool) chan struct{} {
+func (i *Interface) Run(ctx context.Context, etcdPath string, dependencies ...string) chan struct{} {
 	stop := make(chan struct{})
 	go func(i Interface) {
 		done := make(chan struct{})
 
+		chans := make([]chan *event.Event, len(dependencies))
+		for i, dep := range dependencies {
+			watcher := kapi.Watcher(dep, &etcd.WatcherOptions{Recursive: false})
+			chans[i] = etcdWatch(ctx, watcher)
+		}
+
 		check := i.Check.Check(ctx, done)
+		chans = append(chans, check)
+		// Reference http://play.golang.org/p/8zwvSk4kjx
+		cases := make([]reflect.SelectCase, len(chans))
+		for i, ch := range chans {
+			cases[i] = reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(ch)}
+		}
+
+		remaining := len(cases)
+		for remaining > 0 {
+			chosen, value, ok := reflect.Select(cases)
+			if !ok {
+				// The chosen channel has been closed, so zero out the channel to disable the case
+				cases[chosen].Chan = reflect.ValueOf(nil)
+				remaining -= 1
+				continue
+
+			}
+			log.Printf("Read from channel %#v and received %s\n", chans[chosen], value)
+			if chans[chosen] == check {
+				evt := value.Elem().FieldByName("IsDone").Bool()
+				kapi.Set(ctx, etcdPath, strconv.FormatBool(evt), nil)
+				if !evt {
+					// TODO check if all the conditions are met
+					i.Do.Do(ctx)
+				} else {
+
+				}
+			}
+		}
+
 		i.Do.Do(ctx)
 		for {
 			select {
 			case <-stop:
 				return
 			case evt := <-check:
+				kapi.Set(ctx, etcdPath, strconv.FormatBool(evt.IsDone), nil)
 				if !evt.IsDone {
 					// TODO check if all the conditions are met
 					i.Do.Do(ctx)

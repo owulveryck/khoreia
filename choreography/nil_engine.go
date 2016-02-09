@@ -25,13 +25,13 @@ func NewNilEngine(i map[string]interface{}) (*NilEngine, error) {
 
 // Check if f.File is present and send an event on the channel if it
 // appears or disappear
-func (f *NilEngine) Check(ctx context.Context, stop chan struct{}) chan event.Event {
-	c := make(chan event.Event)
+func (f *NilEngine) Check(ctx context.Context, stop chan struct{}) chan *event.Event {
+	c := make(chan *event.Event)
 
 	go func() {
 		defer close(c)
 		for {
-			c <- event.Event{IsDone: true, Msg: ""}
+			c <- &event.Event{IsDone: true, Msg: ""}
 		}
 	}()
 	return c
