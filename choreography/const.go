@@ -32,3 +32,5 @@ const (
 	Delete
 	Deleted
 )
+
+var Lifecycle = []State{Initial, Create, Created, Configure, Configured, Start, Started, Stop, Stopped, Delete, Deleted}
