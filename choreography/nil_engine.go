@@ -2,6 +2,7 @@ package choreography
 
 import (
 	"fmt"
+	"github.com/owulveryck/khoreia/choreography/event"
 )
 
 // The nil engine returns true to every check, and do nothing
@@ -23,13 +24,13 @@ func NewNilEngine(i map[string]interface{}) (*NilEngine, error) {
 
 // Check if f.File is present and send an event on the channel if it
 // appears or disappear
-func (f *NilEngine) Check(stop chan struct{}) chan bool {
-	c := make(chan bool)
+func (f *NilEngine) Check(stop chan struct{}) chan event.Event {
+	c := make(chan event.Event)
 
 	go func() {
 		defer close(c)
 		for {
-			c <- true
+			c <- event.Event{IsDone: true, Msg: ""}
 		}
 	}()
 	return c

@@ -2,6 +2,7 @@ package engines
 
 import (
 	"fmt"
+	"github.com/owulveryck/khoreia/choreography/event"
 	"golang.org/x/exp/inotify"
 	"io/ioutil"
 	"log"
@@ -32,8 +33,8 @@ func NewFileEngine(i map[string]interface{}) (*FileEngine, error) {
 
 // Check if f.File is present and send an event on the channel if it
 // appears or disappear
-func (f *FileEngine) Check(stop chan struct{}) chan bool {
-	c := make(chan bool)
+func (f *FileEngine) Check(stop chan struct{}) chan event.Event {
+	c := make(chan event.Event)
 	watcher, err := inotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
@@ -51,9 +52,9 @@ func (f *FileEngine) Check(stop chan struct{}) chan bool {
 		// Send initial event
 		if _, err := os.Stat(f.File); os.IsNotExist(err) {
 			// path/to/whatever does not exist
-			c <- false
+			c <- event.Event{IsDone: false, Msg: fmt.Sprintf("Initial check, %v is not present", f.File)}
 		} else {
-			c <- true
+			c <- event.Event{IsDone: true, Msg: fmt.Sprintf("Initial check, %v is present", f.File)}
 		}
 		for {
 			select {
@@ -62,11 +63,15 @@ func (f *FileEngine) Check(stop chan struct{}) chan bool {
 				return
 			case ev := <-watcher.Event:
 				if ev.Name == f.File {
+					var evt event.Event
+					evt = event.Event{IsDone: true, Msg: fmt.Sprintf("Event %v ", ev)}
 					switch ev.Mask {
 					case inotify.IN_CREATE:
-						c <- true
+						evt.IsDone = true
+						c <- evt
 					case inotify.IN_DELETE:
-						c <- false
+						evt.IsDone = false
+						c <- evt
 					}
 				}
 			case err := <-watcher.Error:
@@ -78,6 +83,7 @@ func (f *FileEngine) Check(stop chan struct{}) chan bool {
 	return c
 }
 func (e *FileEngine) Do() {
+	log.Println("Writing file", e)
 	err := ioutil.WriteFile(e.File, []byte{}, 0644)
 	if err != nil {
 		log.Println(err)

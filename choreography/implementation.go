@@ -20,6 +20,7 @@ package choreography
 import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/engines"
+	"github.com/owulveryck/khoreia/choreography/event"
 	"log"
 )
 
@@ -27,7 +28,7 @@ import (
 // when needed by its Interface
 type Implementer interface {
 	Do() // Actuall
-	Check(chan struct{}) chan bool
+	Check(chan struct{}) chan event.Event
 	GetOutput() interface{}
 }
 
@@ -47,11 +48,10 @@ func (i *Interface) Run(conditions ...chan bool) chan struct{} {
 			select {
 			case <-stop:
 				return
-			case flag := <-check:
-				log.Printf("Received event: %v", flag)
-				if !flag {
+			case evt := <-check:
+				log.Printf("Received event %v", evt.Msg)
+				if !evt.IsDone {
 					// TODO check if all the conditions are met
-					log.Printf("Calling Do\n")
 					i.Do.Do()
 				}
 			}
@@ -82,6 +82,7 @@ func (i *Interface) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		var implementer Implementer
 		// Get the value of the engine
 		for engine, value := range i {
+			// Create a new implementer based on the engine name
 			switch engine {
 			case "file":
 				impl, err := engines.NewFileEngine(value)
@@ -97,7 +98,6 @@ func (i *Interface) UnmarshalYAML(unmarshal func(interface{}) error) error {
 				implementer = impl
 			}
 		}
-		// Create a new implementer based on the engine name
 
 		return implementer, nil
 	}
