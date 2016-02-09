@@ -27,7 +27,7 @@ type Node struct {
 	State      State
 }
 
-type Deps interface{}
+type Deps map[string][]int
 
 // Lifecycler interface implements a Startup and a Shutdown sequence
 type Lifecycler interface {

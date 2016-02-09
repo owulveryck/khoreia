@@ -111,8 +111,7 @@
         file:
           path: /tmp/nodes/5/create
       do:
-        file: 
-          path: /tmp/nodes/5/create
+        nil: 
     configure:
       check:
         file: 

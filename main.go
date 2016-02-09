@@ -33,12 +33,23 @@ func main() {
 	// Temp: for debug purpose
 	for _, node := range nodes {
 		for k, v := range node.Interfaces {
+			var dep []string
+
 			etcdPath := fmt.Sprintf("/%s/nodes/%s/%s", u1, node.ID, k)
+			// TODO, implement the lifecycle
 			if k == "configure" {
-				dep := fmt.Sprintf("/%s/nodes/%s/%s", u1, node.ID, "create")
-				v.Run(ctx, etcdPath, dep)
-			} else {
+				dep = append(dep, fmt.Sprintf("/%s/nodes/%s/%s", u1, node.ID, "create"))
+			}
+			for _, a := range node.Deps {
+				for _, d := range a["nodes"] {
+					dep = append(dep, fmt.Sprintf("/%s/nodes/%s/%s", u1, d, k))
+				}
+			}
+
+			if dep == nil {
 				v.Run(ctx, etcdPath)
+			} else {
+				v.Run(ctx, etcdPath, dep...)
 
 			}
 			//dependencies := []string{"/", "//"}
