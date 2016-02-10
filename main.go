@@ -56,12 +56,10 @@ func main() {
 				v.Run(ctx, etcdPath, dep...)
 
 			}
-			//dependencies := []string{"/", "//"}
 		}
 	}
 	log.Println("Let's dance")
 
 	stop := make(chan struct{})
 	<-stop
-	//time.Sleep(10 * time.Second)
 }
