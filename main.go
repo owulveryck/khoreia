@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography"
 	"github.com/satori/go.uuid"
@@ -11,8 +12,11 @@ import (
 )
 
 func main() {
+	//var myself = flag.String("host", "local", "The hostname of this node")
+	var topology = flag.String("topology", "samples/topology.yaml", "The topology file")
+	flag.Parse()
 	var nodes []choreography.Node
-	f, err := ioutil.ReadFile("samples/topology.yaml")
+	f, err := ioutil.ReadFile(*topology)
 
 	if err != nil {
 		panic(err)
