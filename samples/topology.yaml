@@ -1,6 +1,6 @@
 - id: 0
   name: a
-  target: localhost
+  target: machine2
   interfaces:
     create:
       check:
@@ -20,7 +20,7 @@
     - 5
 - id: 1
   name: b
-  target: localhost
+  target: machine2
   interfaces:
     create:
       check:
@@ -42,7 +42,7 @@
     - 0
 - id: 2
   name: c
-  target: localhost
+  target: machine2
   interfaces:
     create:
       check:
@@ -64,7 +64,7 @@
     - 5
 - id: 3
   name: d
-  target: localhost
+  target: machine2
   interfaces:
     create:
       check:
@@ -83,7 +83,7 @@
 
 - id: 4
   name: e
-  target: localhost
+  target: machine1
   interfaces:
     create:
       check:
@@ -104,7 +104,7 @@
     - 0
 - id: 5
   name: f
-  target: localhost
+  target: machine1
   interfaces:
     create:
       check:
@@ -121,7 +121,7 @@
           path: /tmp/nodes/5/configure
 - id: 6
   name: g
-  target: localhost
+  target: machine1
   interfaces:
     create:
       check:
@@ -144,7 +144,7 @@
     - 7
 - id: 7
   name: h
-  target: localhost
+  target: machine1
   interfaces:
     create:
       check:
