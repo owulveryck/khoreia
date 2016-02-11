@@ -1,10 +1,11 @@
 package main
 
 import (
+	"crypto/md5"
 	"flag"
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography"
-	"github.com/satori/go.uuid"
+	//"github.com/satori/go.uuid"
 	"golang.org/x/net/context"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -31,7 +32,8 @@ func main() {
 	// Init the etcd client
 	choreography.InitEtcd()
 	// Generate a uuid
-	u1 := uuid.NewV4()
+	//u1 := uuid.NewV4()
+	u1 := md5.New().Sum(f)
 	ctx := context.TODO()
 
 	// Temp: for debug purpose
