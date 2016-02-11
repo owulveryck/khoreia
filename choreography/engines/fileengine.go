@@ -3,8 +3,8 @@ package engines
 import (
 	"fmt"
 	"github.com/owulveryck/khoreia/choreography/event"
-	"golang.org/x/exp/inotify"
 	"golang.org/x/net/context"
+	"gopkg.in/fsnotify.v1"
 	"io/ioutil"
 	"log"
 	"os"
@@ -36,14 +36,14 @@ func NewFileEngine(i map[string]interface{}) (*FileEngine, error) {
 // appears or disappear
 func (f *FileEngine) Check(ctx context.Context, stop chan struct{}) chan *event.Event {
 	c := make(chan *event.Event)
-	watcher, err := inotify.NewWatcher()
+	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
 
 	}
 
 	//log.Println("Watching", f.File)
-	err = watcher.Watch(filepath.Dir(f.File))
+	err = watcher.Add(filepath.Dir(f.File))
 	if err != nil {
 		log.Fatal(err)
 
@@ -62,20 +62,27 @@ func (f *FileEngine) Check(ctx context.Context, stop chan struct{}) chan *event.
 			case <-stop:
 				log.Println("Stop")
 				return
-			case ev := <-watcher.Event:
+			case ev := <-watcher.Events:
 				if ev.Name == f.File {
 					var evt *event.Event
+					//log.Println("event:", ev)
+					/*
+						if ev.Op&fsnotify.Write == fsnotify.Write {
+							log.Println("modified file:", ev.Name)
+						}
+					*/
 					evt = &event.Event{IsDone: true, Msg: fmt.Sprintf("Event %v ", ev)}
-					switch ev.Mask {
-					case inotify.IN_CREATE:
+					//log.Println("Event op:", ev.Op)
+					switch ev.Op {
+					case fsnotify.Create:
 						evt.IsDone = true
 						c <- evt
-					case inotify.IN_DELETE:
+					case fsnotify.Remove:
 						evt.IsDone = false
 						c <- evt
 					}
 				}
-			case err := <-watcher.Error:
+			case err := <-watcher.Errors:
 				log.Println("error:", err)
 
 			}
