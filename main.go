@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	//var myself = flag.String("host", "local", "The hostname of this node")
+	var myself = flag.String("host", "local", "The hostname of this node")
 	var topology = flag.String("topology", "samples/topology.yaml", "The topology file")
 	flag.Parse()
 	var nodes []choreography.Node
@@ -36,6 +36,9 @@ func main() {
 
 	// Temp: for debug purpose
 	for _, node := range nodes {
+		if node.Target != *myself {
+			continue
+		}
 		for k, v := range node.Interfaces {
 			var dep []string
 
